@@ -1,3 +1,4 @@
+
 function IRC (ws, client) {
   this.ws = ws;
   this.client = client;
@@ -7,6 +8,7 @@ function IRC (ws, client) {
   }
   this.ws.addEventListener("message", msgRcvd, false);
 }
+
 
 IRC.prototype = {
 
@@ -38,5 +40,9 @@ IRC.prototype = {
         this.client.privMsg(user, data);
         break;
     }
+  },
+  
+  postMessage: function(message) {
+   this.client.privMsg("felipe", message); 
   }
 };

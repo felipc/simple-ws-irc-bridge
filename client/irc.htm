@@ -3,41 +3,37 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>irc</title>
-</head>
-<style type="text/css" source="styles.css" />
 
-<script type="application/javascript;version=1.8" src="irc.js" />
-<script type="application/javascript;version=1.8" src="client.js" />
+<link rel="stylesheet" type="text/css" media="screen" href="styles.css" />
+
+<script type="application/javascript;version=1.8" src="irc.js"></script>
+<script type="application/javascript;version=1.8" src="client.js"></script>
 
 <script type="application/javascript;version=1.8">
 
-  let frontEnd = new Client(document,
-	                          document.getElementById("textinput"),
-	                          document.getElementById("output"));
-	
-  let ws = new WebSocket("ws://localhost:8080/");
-  let irc = new IRC(ws, frontEnd);
-	
-	function keypress(event) {
-		if (keyCode == 13) {
-		  frontEnd.postMessage();
-		}
-	}
-	
-	function start() {
-		IRC = new IRC(ws);
-		IRC.connect("felipe");
-	}
-	
-	function message(event) {
-		IRC.messageReceived(event.data);
-	}
-</script>
-<body>
-<div id="input">
-  <input id="textinput" type="text" onkeypress="keypress(event)">
-</div>
+var keypress;
 
+document.addEventListener("DOMContentLoaded", function() {
+
+  var frontEnd = new Client(document,
+                            document.getElementById("textinput"),
+                            document.getElementById("output"));
+
+  var ws = new WebSocket("ws://localhost:8080/");
+  var irc = new IRC(ws, frontEnd);
+
+  document.addEventListener("keypress", function(event) {
+    if (event.keyCode == 13) {
+      irc.postMessage(frontEnd.getMessage());
+      frontEnd.clearMessage();
+    }
+  }, false);
+
+}, false);
+</script>
+</head>
+<body>
+<div id="input"><input id="textinput" type="text"></div>
 <div id="output"> </div>
 </body>
 </html>

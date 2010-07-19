@@ -20,3 +20,12 @@ body {
   padding: 0.3em 0.6em;
 }
 
+.debugBox {
+    padding: .4em .3em .3em .3em;
+    font-size: small;
+}
+
+.user, .privmsg {
+    display: inline-block;
+    padding: 0 .1em;
+}

@@ -12,29 +12,32 @@ Client.prototype = {
     let box = doc.createElement("div");
     box.className = "box";
 
-    let user = doc.createElement("div");
-    user.className = "user";
-    user.appendChild(doc.createTextNode(user));
+    let userbox = doc.createElement("div");
+    userbox.className = "user";
+    userbox.appendChild(doc.createTextNode(user + ": "));
     
     let msgbox = doc.createElement("div");
-    msgbox.className = "msg";
+    msgbox.className = "privmsg";
     msgbox.appendChild(doc.createTextNode(msg));
     
-    box.appendChild(user);
+    box.appendChild(userbox);
     box.appendChild(msgbox);
     
-    out.insertBefore(out.firstChild, box);
+    out.insertBefore(box, out.firstChild);
   },
   
-  postMessage: function() {
-    let input = this.doc.getElementById("input");
+  getMessage: function() {
+    return this.input.value;
+  },
+  
+  clearMessage: function() {
+    this.input.value = "";
   },
   
   defaultMsg: function(msg) {
     let box = this.doc.createElement("div");
     box.className = "debugBox";
     box.appendChild(this.doc.createTextNode(msg));
-    this.output.insertBefore(this.output.firstChild, msg);
+    this.output.insertBefore(box, this.output.firstChild);
   }
 }
-    
