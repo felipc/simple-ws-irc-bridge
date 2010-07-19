@@ -5,22 +5,23 @@
 	<title>irc</title>
 </head>
 <style type="text/css" source="styles.css" />
-<script type="text/javascript">
-  //var ws = new WebSocket("ws://localhost:8080/");
-  var IRC;
 
-  ws.addEventListener("open", start, false);
-	ws.addEventListener("message", message, false);
-  ws.onclose = function() {
-	  alert("websocket was closed");
-	};
-  ws.addEventListener("error", function() {
-	  alert("websocket got an error");
-	}, false);
+<script type="application/javascript;version=1.8" src="irc.js" />
+<script type="application/javascript;version=1.8" src="client.js" />
+
+<script type="application/javascript;version=1.8">
+
+  let frontEnd = new Client(document,
+	                          document.getElementById("textinput"),
+	                          document.getElementById("output"));
+	
+  let ws = new WebSocket("ws://localhost:8080/");
+  let irc = new IRC(ws, frontEnd);
 	
 	function keypress(event) {
-		if (keyCode == 13)
-		  postMessage();
+		if (keyCode == 13) {
+		  frontEnd.postMessage();
+		}
 	}
 	
 	function start() {
@@ -33,8 +34,10 @@
 	}
 </script>
 <body>
-<div id="input"><input type="text" onkeypress="keypress(event)"></div>
+<div id="input">
+  <input id="textinput" type="text" onkeypress="keypress(event)">
+</div>
 
-<div id="output">lhjjlk</div>
+<div id="output"> </div>
 </body>
 </html>
