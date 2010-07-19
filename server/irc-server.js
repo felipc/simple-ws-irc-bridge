@@ -11,12 +11,12 @@ serverName = "irc.nodejs.org";
 topic = "node.js ircd https://gist.github.com/a3d0bbbff196af633995";
 
 
-tcp = require("tcp");
+tcp = require("net");
 sys = require("sys");
 puts = sys.puts;
 inspect = sys.inspect;
 
-debugLevel = 0;
+debugLevel = 2;
 
 function debug (m) {
   if (debugLevel > 0) puts(m);
@@ -213,7 +213,7 @@ User.prototype.sendMessage = function (msg, from) {
     debug("send " + ": " + inspect(packet));
   }
 
-  this.socket.send(packet, "utf8");
+  this.socket.write(packet, "utf8");
 };
 
 User.prototype.prefix = function () {
@@ -433,7 +433,7 @@ server = tcp.createServer(function (socket) {
   // (We're adding on having a high-level "catch all uncaught exceptions"
   // feature soon, which would also solve this proble.)
 
-  socket.addListener("receive", function (packet) {
+  socket.addListener("data", function (packet) {
     try {
       buffer += packet;
       var i;
@@ -448,7 +448,7 @@ server = tcp.createServer(function (socket) {
         }
       }
     } catch (e) {
-      puts("uncaught exception!");
+      //puts("uncaught exception!");
     }
   });
 
