@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>irc</title>
+</head>
+<style type="text/css" source="styles.css" />
+<script type="text/javascript">
+  //var ws = new WebSocket("ws://localhost:8080/");
+  var IRC;
+
+  ws.addEventListener("open", start, false);
+	ws.addEventListener("message", message, false);
+  ws.onclose = function() {
+	  alert("websocket was closed");
+	};
+  ws.addEventListener("error", function() {
+	  alert("websocket got an error");
+	}, false);
+	
+	function keypress(event) {
+		if (keyCode == 13)
+		  postMessage();
+	}
+	
+	function start() {
+		IRC = new IRC(ws);
+		IRC.connect("felipe");
+	}
+	
+	function message(event) {
+		IRC.messageReceived(event.data);
+	}
+</script>
+<body>
+<div id="input"><input type="text" onkeypress="keypress(event)"></div>
+
+<div id="output">lhjjlk</div>
+</body>
+</html>
