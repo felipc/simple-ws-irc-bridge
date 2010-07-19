@@ -26,11 +26,11 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 
   var ws = new WebSocket("ws://localhost:8080/");
-  var irc = new IRC(ws, frontEnd, "127.0.0.1", "6667", "felipe");
+  var irc = new IRC(ws, frontEnd, "127.0.0.1", "6667", nick);
 
   document.addEventListener("keypress", function(event) {
     if (event.keyCode == 13) {
-      irc.postMessage(frontEnd.getMessage());
+      irc.postMessage(frontEnd.getMessage(), frontEnd.currentView);
       frontEnd.clearMessage();
     }
   }, false);

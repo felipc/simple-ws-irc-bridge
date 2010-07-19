@@ -11,9 +11,26 @@ function Client(doc, input, console) {
 }
 
 Client.prototype = {
-  privMsg: function(user, msg) {
+  privMsg: function(user, data, currentNick) {
     let doc = this.doc;
-    let out = this.output;
+    
+    let result = /^([^ ]+) :(.*)$/.exec(data);
+    
+    let destination, msg;
+    try {
+      destination = result[1];
+      msg = result[2];
+    } catch (e) {
+      alert("error on privmsg");
+      return;
+    }
+    
+    let out;
+    if (destination == currentNick) {
+      out = this.getViewFor(user);
+    } else {
+      out = this.getViewFor(destination);
+    }
 
     let box = doc.createElement("div");
     box.className = "box";

@@ -27,7 +27,7 @@ IRC.prototype = {
   },
 
   messageReceived: function(message) {
-    
+
     if (message.data == "@@@GO") {
       this.client.defaultMsg("GOT a GO");
       let self = this;
@@ -36,14 +36,21 @@ IRC.prototype = {
       }, 2000);
       return;
     }
-    
-    this.client.defaultMsg(message.data);
-    
-    let result = /^(:[^ ]+ )?([^ ]+) (.*)$/.exec(message.data);
-    let origin = result[1] || "";
-    let command = result[2] || "";
-    let data = result[3] || "";
 
+    let msg = message.data.replace(/[\r\n]/g, "");
+    this.client.defaultMsg(msg);
+
+    let result = /^(:[^ ]+ )?([^ ]+) (.*)$/.exec(msg);
+
+    let origin, command, data;
+
+    try {
+      origin = result[1] || "";
+      command = result[2] || "";
+      data = result[3] || "";
+    } catch (e) { }
+
+    
     switch (command) {
       case "PING":
         this.client.defaultMsg("Ponging " + data);
@@ -52,17 +59,47 @@ IRC.prototype = {
 
       case "PRIVMSG":
         let user = /^:([^!]+)!/.exec(origin)[1] || origin;
-        this.client.privMsg(user, data);
+        this.client.privMsg(user, data, this.nick);
         break;
       
       default:
-        this.client.defaultMsg(message.data);
+        this.client.defaultMsg(msg);
         break;
     }
   },
   
-  postMessage: function(msg) {
-   this.client.defaultMsg(msg);
-   this.ws.send(msg);
+  postMessage: function(msg, currentView) {
+   if (msg.substring(0, 1) == "/") {
+     let result = /^\/([^ ]+) ?(.*)$/.exec(msg);
+     let command, data;
+
+     try {
+       command = result[1];
+       data = result[2];
+     } catch (e) { }
+
+     switch (command) {
+       case "join":
+       case "query":
+         this.client.getViewFor(data);
+         if (command == "join")
+           this.ws.send("JOIN " + data);
+         break;
+      
+        default:
+          this.client.defaultMsg("cant parse " + msg);
+          break;
+      }
+   } else {
+     if (currentView != "@@@console") {
+       this.ws.send("PRIVMSG " + currentView + " :" + msg);
+       this.client.privMsg(this.nick,
+                           currentView + " :" + msg,
+                           this.nick);
+     } else {
+       this.ws.send(msg);
+       this.client.defaultMsg("@@@console: " + msg);
+     }
+   }
   }
 };
