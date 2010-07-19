@@ -11,13 +11,23 @@ body {
 	border: 0;
 }
 
-#output {
+.output {
 	position: absolute;
 	top: 25px;
-	left: 0; right: 0; bottom: 0;
+	left: 0; right: 0; bottom: 20px;
 	border: 0;
 	border-top: 1px solid #ccc;
-  padding: 0.3em 0.6em;
+    padding: 0.3em 0.6em;
+}
+
+#channelSelector {
+    position: absolute;
+    height: 30px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 0;
+    border-top: 1px solid #ccc;
 }
 
 .debugBox {
@@ -28,4 +38,9 @@ body {
 .user, .privmsg {
     display: inline-block;
     padding: 0 .1em;
+}
+
+button, input[type="button"] {
+  width: 100px;
+ float: left;
 }

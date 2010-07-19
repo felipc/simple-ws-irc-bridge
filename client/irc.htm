@@ -11,22 +11,22 @@
 
 <script type="application/javascript;version=1.8">
 
-var keypress;
+var keypress, frontEnd;
 
 document.addEventListener("DOMContentLoaded", function() {
 
-  var frontEnd = new Client(document,
-                            document.getElementById("textinput"),
-                            document.getElementById("output"));
+  frontEnd = new Client(document,
+                        document.getElementById("textinput"),
+                        document.getElementById("console"));
 
   var nick = document.location.hash.substring(1);
-  if (nick == "") {
-	  alert("no nick");
+  if (!nick) {
+	  frontEnd.defaultMsg("no nick");
 	  return;
 	}
 
   var ws = new WebSocket("ws://localhost:8080/");
-  var irc = new IRC(ws, frontEnd, "127.0.0.1", "6667", nick);
+  var irc = new IRC(ws, frontEnd, "127.0.0.1", "6667", "felipe");
 
   document.addEventListener("keypress", function(event) {
     if (event.keyCode == 13) {
@@ -39,7 +39,10 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 </head>
 <body>
-<div id="input"><input id="textinput" type="text"></div>
-<div id="output"> </div>
+<div id="input"><input id="textinput" type="text"></input></div>
+<div id="console" class="output"> </div>
+<div id="channelSelector">
+	<button type="button" onclick="frontEnd.switchView('@@@console')">Console</button>
+</div>
 </body>
 </html>
