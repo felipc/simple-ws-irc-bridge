@@ -20,9 +20,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             document.getElementById("output"));
 
   var nick = document.location.hash.substring(1);
-
-  if(!confirm("Nick: " + nick))
-    return;
+  if (nick == "") {
+	  alert("no nick");
+	  return;
+	}
 
   var ws = new WebSocket("ws://localhost:8080/");
   var irc = new IRC(ws, frontEnd, "127.0.0.1", "6667", nick);
