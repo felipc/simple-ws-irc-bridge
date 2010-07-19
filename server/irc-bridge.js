@@ -1,25 +1,31 @@
 var sys = require("sys"),
-    ws = require("./ws");
+    ws = require("./ws"),
+    net = require("net");
 
-var count = 0;
+var ircserver = null;
+var websocket = null;
 
-ws.createServer(function (websocket) {
+ws.createServer(function (server) {
+  websocket = server;
   websocket.addListener("connect", function (resource) { 
     // emitted after handshake
     sys.debug("connect: " + resource);
-    sys.debug("equality: " + (ws == websocket) ? "true" : "false");
-    // server closes connection after 10s, will also get "close" event
-    setTimeout(websocket.end, 3 * 1000); 
 
   }).addListener("data", function (data) { 
-    // handle incoming data
     sys.debug(data);
-    if (data == "hello")
-      // send data to client
-      websocket.write("World!!!!");
-      
-    if (data == "count")
-      websocket.write("" + ++count);
+    // handle incoming data
+    if (/^@@@Connect/.test(data)) {
+      var result = /^@@@Connect ([^ ]+) (\d+)$/.exec(data);
+      var server = result[1] || "";
+      var port = result[2] || "";
+      sys.debug("Connecting to " + server + ":" + port);
+      connectToIRC(server, port);
+      return;
+    }
+    
+    sys.debug("writing data: " + data);
+    ircserver.write(data + "\r\n");
+    sys.debug("wrote data");
       
   }).addListener("close", function () { 
     // emitted when server or client closes connection
@@ -27,4 +33,17 @@ ws.createServer(function (websocket) {
   });
 }).listen(8080);
 
-sys.debug("listening on localhost:8080");
+sys.debug("Websocket listening on localhost:8080");
+
+function connectToIRC(server, port) {
+  sys.debug("connecting...");
+  ircserver = net.createConnection(port, server);
+  ircserver.addListener("connect", function(resource) {
+    sys.debug("tcp connected");
+    websocket.write("@@@GO"); 
+  })
+  .addListener("data", function(data) {
+    sys.debug("data from tcp: " + data);
+    websocket.write(data);
+  });
+}
