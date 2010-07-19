@@ -22,15 +22,18 @@ IRC.prototype = {
 
   handshake: function() {
     this.client.defaultMsg("starting handshake " + this.nick);
-    this.ws.send("USER " + this.nick + "aaa bbb :" + this.nick);
     this.ws.send("NICK " + this.nick);
+    this.ws.send("USER " + this.nick + "aaa bbb :" + this.nick);
   },
 
   messageReceived: function(message) {
     
     if (message.data == "@@@GO") {
       this.client.defaultMsg("GOT a GO");
-      IRC.prototype.handshake.call(this);
+      let self = this;
+      setTimeout(function() {
+        IRC.prototype.handshake.call(self);
+      }, 2000);
       return;
     }
     
@@ -43,6 +46,7 @@ IRC.prototype = {
 
     switch (command) {
       case "PING":
+        this.client.defaultMsg("Ponging " + data);
         this.ws.send("PONG " + data);
         break;
 
